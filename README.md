@@ -26,7 +26,7 @@ in various formats
 
 
     $T->downloadIssue(TargetDir=>"/tmp", 
-                      Format=>'epub\_faks', 
+                      Format=>'epub_faks', 
                       Date=>'23.02.2013' 
                      );
 
@@ -46,7 +46,7 @@ can be `Today`, `Tomorrow` or `DD.MM.YYYY`
 
 - Format (optional)
 
-`epub\_txt`, `epub\_faks`, `ascii`, `mobi`, `pdf`, `html\_zip`, `ipad` ...
+`epub_txt`, `epub_faks`, `ascii`, `mobi`, `pdf`, `html_zip`, `ipad` ...
 for a full list and description see source
 
 ## downloadIssue(Date=>'Tomorrow', Format=>'epub', TargetDir=>'.')
@@ -65,7 +65,7 @@ default is `Today`
 
 - Format
 
-`epub\_txt`, `epub\_faks`, `ascii`, `mobi`, `pdf`, `html\_zip`, `ipad` ...
+`epub_txt`, `epub_faks`, `ascii`, `mobi`, `pdf`, `html_zip`, `ipad` ...
 for a full list and description see source
 default is `epub`
 
@@ -80,7 +80,7 @@ Peter Mayr, `<at.peter.mayr at gmail.com>`
 # BUGS
 
 Please report any bugs or feature requests to `at.peter.mayr at gmail.com`
-or open an issue at ["/github.com/hatorikibble/taz-downloader/issues" in https:](http://search.cpan.org/perldoc?https:#/github.com/hatorikibble/taz-downloader/issues)
+or open an issue at ["https://github.com/hatorikibble/taz-downloader/issues"](https://github.com/hatorikibble/taz-downloader/issues)
 
 
 
