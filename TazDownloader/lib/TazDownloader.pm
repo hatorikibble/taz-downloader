@@ -81,7 +81,7 @@ subtype 'TazDate',
 has 'TazDownloadUrl' =>
     ( is => 'ro', isa => 'Str', default => 'dl.taz.de/taz/abo/get.php' );
 has 'TazRssUrl' =>
-    ( is => 'ro', isa => 'Str', default => 'https://dl.taz.de/abo.rss' );
+    ( is => 'ro', isa => 'Str', default => 'http://dl.taz.de/abo.rss' );
 
 has 'User'     => ( is => 'rw', isa => 'Str', required => 1 );
 has 'Password' => ( is => 'rw', isa => 'Str', required => 1 );
@@ -126,7 +126,7 @@ sub BUILD {
 
     $parser = XML::RSS::Parser->new();
     $feed   = $parser->parse_uri( $self->TazRssUrl );
-
+     
     foreach my $item ( $feed->query('//item') ) {
         $title = $item->query('title')->text_content;
         $link  = $item->query('link')->text_content;
