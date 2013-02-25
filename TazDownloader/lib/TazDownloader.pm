@@ -1,6 +1,5 @@
 package TazDownloader;
 
-
 =head1 NAME
 
 TazDownloader - Download the taz e-paper!
@@ -45,64 +44,69 @@ use Moose;
 use Moose::Util::TypeConstraints;
 use MooseX::Params::Validate;
 
-use Switch;
+
 use Date::Calc qw (Add_Delta_Days);
 use Date::Format;
-use LWP::Simple;
-use XML::RSS::Parser;
 use File::Spec;
+use LWP::Simple;
+use Switch;
+use URI;
+use XML::Feed;
 
 
-    my %formatStrings = ( 'ASCII nur Text'               => 'ascii',
-                    'ASCII nur Text, ZIP-Datei'    => 'ascii_zip',
-                    'HTML ZIP-Datei'               => 'html_zip',
-                    'iPaper'                       => 'ipad',
-                    'Mobipocket nur Text'          => 'mobi_txt',
-                    'Mobipocket mit Faksimiles'    => 'mobi_faks',
-                    'E-Book mit Faksimiles'        => 'epub_faks',
-                    'E-Book nur Text'              => 'epub_txt',
-                    'PDF'                          => 'pdf',
-                    'PDF einzelnen Seiten gezippt' => 'pdf_zip'
-    );
-    my %formatIds = reverse(%formatStrings);
 
+my %formatStrings = (
+    'ASCII nur Text'               => 'ascii',
+    'ASCII nur Text, ZIP-Datei'    => 'ascii_zip',
+    'HTML ZIP-Datei'               => 'html_zip',
+    'iPaper'                       => 'ipad',
+    'Mobipocket nur Text'          => 'mobi_txt',
+    'Mobipocket mit Faksimiles'    => 'mobi_faks',
+    'E-Book mit Faksimiles'        => 'epub_faks',
+    'E-Book nur Text'              => 'epub_txt',
+    'PDF'                          => 'pdf',
+    'PDF einzelnen Seiten gezippt' => 'pdf_zip'
+);
+my %formatIds = reverse(%formatStrings);
 
 subtype 'TazFormat',
- as 'Str',
- where { exists($formatIds{$_}) },
- message { "Format has to be one of ".join(", ",keys(%formatIds))."!" };
+  as 'Str',
+  where { exists( $formatIds{$_} ) },
+  message { "Format has to be one of " . join( ", ", keys(%formatIds) ) . "!" };
 
 subtype 'TazDate',
   as 'Str',
   where { $_ =~ /^(Today|Tomorrow|\d{2}.\d{2}\.\d{4})$/ },
-  message {"Date must be one of 'Today','Tomorrow' or 'DD.MM.YYYY'" };
+  message { "Date must be one of 'Today','Tomorrow' or 'DD.MM.YYYY'" };
 
 has 'TazDownloadUrl' =>
-    ( is => 'ro', isa => 'Str', default => 'dl.taz.de/taz/abo/get.php' );
+  ( is => 'ro', isa => 'Str', default => 'dl.taz.de/taz/abo/get.php' );
 has 'TazRssUrl' =>
-    ( is => 'ro', isa => 'Str', default => 'http://dl.taz.de/abo.rss' );
+  ( is => 'ro', isa => 'Str', default => 'http://dl.taz.de/abo.rss' );
 
 has 'User'     => ( is => 'rw', isa => 'Str', required => 1 );
 has 'Password' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'Format' =>
-    ( is => 'rw', isa => enum( [qw( EPub Txt )] ), default => 'EPub' );
+  ( is => 'rw', isa => enum( [qw( EPub Txt )] ), default => 'EPub' );
 
-has 'Today' => ( is      => 'ro',
-                 isa     => 'Str',
-                 default => sub { return time2str( '%d.%m.%Y', time ); }
+has 'Today' => (
+    is      => 'ro',
+    isa     => 'Str',
+    default => sub { return time2str( '%d.%m.%Y', time ); }
 );
 
-has 'Tomorrow' => (is => 'ro',
-                  isa => 'Str',
-                  default => sub { 
-my ($y,$m,$d) = Add_Delta_Days(time2str('%Y',time),
-                               time2str('%L',time),
-                               time2str('%d',time),
-                               1);
-return sprintf('%02d',$d).".".sprintf('%02d',$m).".".$y;
-});
-
-
+has 'Tomorrow' => (
+    is      => 'ro',
+    isa     => 'Str',
+    default => sub {
+        my ( $y, $m, $d ) = Add_Delta_Days(
+            time2str( '%Y', time ),
+            time2str( '%L', time ),
+            time2str( '%d', time ), 1
+        );
+        return sprintf( '%02d', $d ) . "." . sprintf( '%02d', $m ) . "." . $y;
+    }
+);
 
 =head2 BUILD
 
@@ -112,7 +116,6 @@ Constructor, also get RSS-Feed of available issues
 
 sub BUILD {
     my $self     = shift;
-    my $parser   = undef;
     my $feed     = undef;
     my $title    = undef;
     my $link     = undef;
@@ -122,20 +125,19 @@ sub BUILD {
     my $filename = undef;
     my $issues   = undef;
 
+    $feed = XML::Feed->parse( URI->new( $self->TazRssUrl ) )
+      or die XML::Feed->errstr;
 
-    $parser = XML::RSS::Parser->new();
-    $feed   = $parser->parse_uri( $self->TazRssUrl );
-     
-    foreach my $item ( $feed->query('//item') ) {
-        $title = $item->query('title')->text_content;
-        $link  = $item->query('link')->text_content;
-        if ( $title
-             =~ /^taz vom (\d+)\.(\d+)\.(\d{4}) als (.*?) (\d.*? (K|M)B)$/ )
+    foreach my $item ( $feed->entries() ) {
+
+        $title = $item->title();
+        $link  = $item->link();
+
+        if ( $title =~
+            /^taz vom (\d+)\.(\d+)\.(\d{4}) als (.*?) (\d.*? (K|M)B)$/ )
         {
-            $date
-                = sprintf( '%02d', $1 ) . "."
-                . sprintf( '%02d', $2 ) . "."
-                . $3;
+            $date =
+              sprintf( '%02d', $1 ) . "." . sprintf( '%02d', $2 ) . "." . $3;
             $format = $4;
             if ( $format =~ /iPaper/ ) {    # hack wegen umlaut im titel
                 $format = "iPaper";
@@ -145,8 +147,8 @@ sub BUILD {
                 $issues->{$date}->{ $formatStrings{$format} }->{size} = $size;
                 $issues->{$date}->{ $formatStrings{$format} }->{url}  = $link;
                 if ( $link =~ /\/([^\/]+?)$/ ) {
-                    $issues->{$date}->{ $formatStrings{$format} }->{filename}
-                        = $1;
+                    $issues->{$date}->{ $formatStrings{$format} }->{filename} =
+                      $1;
                 }
                 else {
                     die "could not determine filename from URL: " . $link;
@@ -188,9 +190,10 @@ for a full list and description see source
 
 sub isAvailable {
     my $self = shift;
-    my %p    = validated_hash( \@_,
-                            'Date' => { isa => 'TazDate', default => 'Today' },
-                            'Format' => { isa => 'TazFormat', optional=> 1 },
+    my %p    = validated_hash(
+        \@_,
+        'Date'   => { isa => 'TazDate',   default  => 'Today' },
+        'Format' => { isa => 'TazFormat', optional => 1 },
     );
     my $date = undef;
 
@@ -247,11 +250,11 @@ directory in which the file is downloaded to
 
 sub downloadIssue {
     my $self = shift;
-    my %p = validated_hash(
-                          \@_,
-                          'Date' => { isa => 'TazDate', default => 'Today' },
-                          'Format' => { isa => 'TazFormat', default => 'epub' },
-                          'TargetDir' => { isa => 'Str', required => 1 }
+    my %p    = validated_hash(
+        \@_,
+        'Date'      => { isa => 'TazDate',   default  => 'Today' },
+        'Format'    => { isa => 'TazFormat', default  => 'epub' },
+        'TargetDir' => { isa => 'Str',       required => 1 }
     );
     my $date        = undef;
     my $url         = undef;
@@ -267,7 +270,7 @@ sub downloadIssue {
 
     if ( -x $p{TargetDir} ) {
         if ( $self->isAvailable( Date => $p{Date}, Format => $p{Format} ) eq
-             'true' )
+            'true' )
         {
 
             $url         = $self->{Issues}->{$date}->{ $p{Format} }->{url};
@@ -275,26 +278,27 @@ sub downloadIssue {
 
             $url =~ s/^https:\/\//https:\/\/$auth_string/o;
 
-            $target_file = File::Spec->catfile( $p{TargetDir},
-                         $self->{Issues}->{$date}->{ $p{Format} }->{filename} );
+            $target_file =
+              File::Spec->catfile( $p{TargetDir},
+                $self->{Issues}->{$date}->{ $p{Format} }->{filename} );
 
             $status = getstore( $url, $target_file );
             if ( $status eq '200' ) {
                 return "OK";
             }
             else {
-                die "Problem downloading "
-                    . $url . " to "
-                    . $target_file
-                    . "! HTTP Status was "
-                    . $status;
+                die "Problem downloading " 
+                  . $url . " to "
+                  . $target_file
+                  . "! HTTP Status was "
+                  . $status;
             }
         }
         else {
             die "Sorry! taz issue for "
-                . $p{Date} . " in "
-                . $p{Format}
-                . " is not available!";
+              . $p{Date} . " in "
+              . $p{Format}
+              . " is not available!";
         }
 
     } ## end if ( -x $p{TargetDir} )
