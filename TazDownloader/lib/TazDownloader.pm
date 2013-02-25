@@ -52,7 +52,6 @@ use LWP::Simple;
 use XML::RSS::Parser;
 use File::Spec;
 
-use Data::Dumper;
 
     my %formatStrings = ( 'ASCII nur Text'               => 'ascii',
                     'ASCII nur Text, ZIP-Datei'    => 'ascii_zip',
