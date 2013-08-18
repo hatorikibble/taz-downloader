@@ -21,6 +21,7 @@ WriteMakefile(
         'Moose'                        => '2.0602',
         'Moose::Util::TypeConstraints' => '2.0602',
         'MooseX::Params::Validate'     => '0.18',
+        'Mozilla::CA'                  => 0,
         'Switch'                       => '2.16',
         'XML::Feed'                    => '0.51',
     },

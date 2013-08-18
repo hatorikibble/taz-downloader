@@ -44,7 +44,6 @@ use Moose;
 use Moose::Util::TypeConstraints;
 use MooseX::Params::Validate;
 
-
 use Date::Calc qw (Add_Delta_Days);
 use Date::Format;
 use File::Spec;
@@ -52,8 +51,6 @@ use LWP::Simple;
 use Switch;
 use URI;
 use XML::Feed;
-
-
 
 my %formatStrings = (
     'ASCII nur Text'               => 'ascii',
@@ -69,13 +66,11 @@ my %formatStrings = (
 );
 my %formatIds = reverse(%formatStrings);
 
-subtype 'TazFormat',
-  as 'Str',
+subtype 'TazFormat', as 'Str',
   where { exists( $formatIds{$_} ) },
   message { "Format has to be one of " . join( ", ", keys(%formatIds) ) . "!" };
 
-subtype 'TazDate',
-  as 'Str',
+subtype 'TazDate', as 'Str',
   where { $_ =~ /^(Today|Tomorrow|\d{2}.\d{2}\.\d{4})$/ },
   message { "Date must be one of 'Today','Tomorrow' or 'DD.MM.YYYY'" };
 
@@ -287,11 +282,12 @@ sub downloadIssue {
                 return "OK";
             }
             else {
-                die "Problem downloading " 
+                die "Problem downloading "
                   . $url . " to "
                   . $target_file
                   . "! HTTP Status was "
                   . $status;
+
             }
         }
         else {
