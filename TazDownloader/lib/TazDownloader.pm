@@ -6,11 +6,11 @@ TazDownloader - Download the taz e-paper!
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
@@ -53,16 +53,16 @@ use URI;
 use XML::Feed;
 
 my %formatStrings = (
-    'ASCII nur Text'               => 'ascii',
-    'ASCII nur Text, ZIP-Datei'    => 'ascii_zip',
-    'HTML ZIP-Datei'               => 'html_zip',
-    'iPaper'                       => 'ipad',
-    'Mobipocket nur Text'          => 'mobi_txt',
-    'Mobipocket mit Faksimiles'    => 'mobi_faks',
-    'E-Book mit Faksimiles'        => 'epub_faks',
-    'E-Book nur Text'              => 'epub_txt',
-    'PDF'                          => 'pdf',
-    'PDF einzelnen Seiten gezippt' => 'pdf_zip'
+    'Text'      => 'txt',
+    'Text-Zip'  => 'txt_zip',
+    'HTML'      => 'html',
+    'iPaper'    => 'ipad',
+    'Mobi-Text' => 'mobi_txt',
+    'Mobi'      => 'mobi_faks',
+    'ePub'      => 'epub_faks',
+    'ePub-Text' => 'epub_txt',
+    'PDF'       => 'pdf',
+    'PDF-Zip'   => 'pdf_zip'
 );
 my %formatIds = reverse(%formatStrings);
 
@@ -129,7 +129,9 @@ sub BUILD {
         $link  = $item->link();
 
         if ( $title =~
-            /^taz vom (\d+)\.(\d+)\.(\d{4}) als (.*?) (\d.*? (K|M)B)$/ )
+            /^taz vom (\d+)\.(\d+)\.(\d{4}) als (.*?) (\d+.*?(K|M)B)$/ )
+
+          #taz vom 24.01.2014 als PDF 4.5MB
         {
             $date =
               sprintf( '%02d', $1 ) . "." . sprintf( '%02d', $2 ) . "." . $3;
