@@ -6,11 +6,11 @@ TazDownloader - Download the taz e-paper!
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
@@ -44,8 +44,7 @@ use Moose;
 use Moose::Util::TypeConstraints;
 use MooseX::Params::Validate;
 
-use Date::Calc qw (Add_Delta_Days);
-use Date::Format;
+use DateTime;
 use File::Spec;
 use LWP::Simple;
 use Switch;
@@ -87,19 +86,18 @@ has 'Format' =>
 has 'Today' => (
     is      => 'ro',
     isa     => 'Str',
-    default => sub { return time2str( '%d.%m.%Y', time ); }
+    default => sub {
+        my $dt = DateTime->now();
+        return sprintf( '%02d.%02d.%s', $dt->day, $dt->month, $dt->year);
+    }
 );
 
 has 'Tomorrow' => (
     is      => 'ro',
     isa     => 'Str',
     default => sub {
-        my ( $y, $m, $d ) = Add_Delta_Days(
-            time2str( '%Y', time ),
-            time2str( '%L', time ),
-            time2str( '%d', time ), 1
-        );
-        return sprintf( '%02d', $d ) . "." . sprintf( '%02d', $m ) . "." . $y;
+        my $dt = DateTime->now->add(days=>1);
+        return sprintf( '%02d.%02d.%s', $dt->day, $dt->month, $dt->year);
     }
 );
 

@@ -14,8 +14,7 @@ WriteMakefile(
     CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 0, },
     BUILD_REQUIRES     => { 'Test::More' => 0, },
     PREREQ_PM          => {
-        'Date::Calc'                   => '6.3',
-        'Date::Format'                 => '2.24',
+        'DateTime'                   => '1.18',
         'File::Spec'                   => '3.40',
         'LWP::Simple'                  => '6.00',
         'Moose'                        => '2.0602',
