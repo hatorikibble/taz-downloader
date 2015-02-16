@@ -4,17 +4,7 @@ perl:
   - "5.18"
 install:
 # Deal with dependencies
-- cpanm installdeps ./TazDownloader
-#- cpanm -n Date::Calc
-#- cpanm -n Date::Format
-#- cpanm -n File::Spec
-#- cpanm -n LWP::Simple
-#- cpanm -n Moose
-#- cpanm -n Moose::Util::TypeConstraints
-#- cpanm -n MooseX::Params::Validate
-#- cpanm -n Mozilla::CA
-#- cpanm -n Switch
-#- cpanm -n XML::Feed
+- cpanm --installdeps ./TazDownloader
 script:
 - cd TazDownloader
 - perl Makefile.PL
