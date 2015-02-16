@@ -315,7 +315,7 @@ Peter Mayr, C<< <at.peter.mayr at gmail.com> >>
 =head1 BUGS
 
 Please report any bugs or feature requests to C<at.peter.mayr at gmail.com>
-or open an issue at L< https://github.com/hatorikibble/taz-downloader/issues >
+or open an issue at L<https://github.com/hatorikibble/taz-downloader/issues>
 
 
 =head1 SUPPORT
@@ -326,7 +326,7 @@ You can find documentation for this module with the perldoc command.
 
 
 You can also look for information at Github: 
-L< https://github.com/hatorikibble/taz-downloader/issues >
+L<https://github.com/hatorikibble/taz-downloader/issues>
 
 
 =head1 LICENSE AND COPYRIGHT
