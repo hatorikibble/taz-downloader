@@ -8,17 +8,18 @@ plan tests => 6;
 
 use_ok('TazDownloader') || print "Bail out!\n";
 
-use Date::Format;
+use DateTime;
 
 my $non_date      = '32.12.2013';
 my $TazDownloader = TazDownloader->new(
     User     => 'dummy',
     Password => 'dummy'
 );
+my $today=DateTime->now->strftime('%d.%m.%Y');
 
 is(
     $TazDownloader->Today,
-    time2str( '%d.%m.%Y', time ),
+    $today,
     "TazDownloader's 'Today' is really today"
 );
 ok( defined( $TazDownloader->TazDownloadUrl ), "TazDownloadUrl in Object" );
