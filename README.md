@@ -84,4 +84,3 @@ or open an issue at ["https://github.com/hatorikibble/taz-downloader/issues"](ht
 
 
 
-
