@@ -4,7 +4,7 @@ perl:
   - "5.18"
 install:
 # Deal with dependencies
-cpanm installdeps ./TazDownloader
+- cpanm installdeps ./TazDownloader
 #- cpanm -n Date::Calc
 #- cpanm -n Date::Format
 #- cpanm -n File::Spec
