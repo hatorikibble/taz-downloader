@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/hatorikibble/taz-downloader.svg?branch=master)](https://travis-ci.org/hatorikibble/taz-downloader)
+
 # NAME
 
 TazDownloader - Download the taz e-paper!
