@@ -4,7 +4,7 @@ perl:
   - "5.18"
 install:
 # Deal with dependencies
-- cpanm --installdeps ./TazDownloader
+- cpanm --notest --installdeps ./TazDownloader
 script:
 - cd TazDownloader
 - perl Makefile.PL
