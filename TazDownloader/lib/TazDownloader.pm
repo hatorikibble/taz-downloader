@@ -164,7 +164,7 @@ sub BUILD {
 
 =head2 isAvailable(Date=>'Today')
 
-checks if taz issue is available for C<Date>
+checks if taz issue is available for C<Date>, returns C<undef> if not
 
 B<Params>
 
@@ -200,16 +200,16 @@ sub isAvailable {
 
     if ( defined( $p{Format} ) ) {    # check also if format available
         if ( defined( $self->{Issues}->{$date}->{ $p{Format} } ) ) {
-            return "true";
+            return 1;
         }
 
     }
     else {                            # just the date
         if ( defined( $self->{Issues}->{$date} ) ) {
-            return "true";
+            return 1;
         }
     }
-    return "false";
+    return undef;
 
 } ## end sub isAvailable
 
