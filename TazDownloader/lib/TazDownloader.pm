@@ -264,9 +264,7 @@ sub downloadIssue {
     }
 
     if ( -x $p{TargetDir} ) {
-        if ( $self->isAvailable( Date => $p{Date}, Format => $p{Format} ) eq
-            'true' )
-        {
+        if ( $self->isAvailable( Date => $p{Date}, Format => $p{Format} ) ) {
 
             $url         = $self->{Issues}->{$date}->{ $p{Format} }->{url};
             $auth_string = $self->User . ":" . $self->Password . "\@";
