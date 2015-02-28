@@ -1,8 +1,10 @@
+.gitignore
 Changes
 lib/TazDownloader.pm
 Makefile.PL
 MANIFEST			This list of files
 README
+t/00-kwalitee.t
 t/00-load.t
 t/01-tazdownloader.t
 t/boilerplate.t
